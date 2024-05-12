@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"log/slog"
 	"net/url"
 	"sync/atomic"
 
@@ -70,6 +71,8 @@ func (c *MemcacheCache) Name() string {
 
 func (c *MemcacheCache) Get(ctx context.Context, key string) (io.ReadSeekCloser, error) {
 
+	slog.Debug("GET", "key", key)
+
 	item, err := c.client.Get(key)
 
 	if err != nil {
@@ -95,6 +98,8 @@ func (c *MemcacheCache) Get(ctx context.Context, key string) (io.ReadSeekCloser,
 
 func (c *MemcacheCache) Set(ctx context.Context, key string, r io.ReadSeekCloser) (io.ReadSeekCloser, error) {
 
+	slog.Debug("SET", "key", key)
+
 	body, err := io.ReadAll(r)
 
 	if err != nil {
@@ -117,6 +122,8 @@ func (c *MemcacheCache) Set(ctx context.Context, key string, r io.ReadSeekCloser
 }
 
 func (c *MemcacheCache) Unset(ctx context.Context, key string) error {
+
+	slog.Debug("UNSET", "key", key)
 
 	err := c.client.Delete(key)
 
